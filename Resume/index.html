@@ -1,72 +1,503 @@
 <!DOCTYPE html>
-
+<html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <title>Resume</title>
-  <link href="css/style.css" rel="stylesheet">
-  <script src="js/jQuery.js"></script>
-  <script src="js/helper.js"></script>
-  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
-  <script src="https://use.fontawesome.com/26f9ed670f.js"></script>
-  <meta name="viewport" content="width=device-width">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моё резюме</title>
+    <style>
+        /* Общие стили */
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --text-color: #333;
+            --text-light: #7f8c8d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f5f5f5;
+        }
+        
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Шапка */
+        header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        @media (min-width: 768px) {
+            .header-content {
+                flex-direction: row;
+                text-align: left;
+            }
+        }
+        
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--light-color);
+            margin-bottom: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .profile-img {
+                margin-right: 40px;
+                margin-bottom: 0;
+            }
+        }
+        
+        .header-text h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header-text p {
+            font-size: 1.1rem;
+            color: var(--light-color);
+            margin-bottom: 15px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        @media (min-width: 768px) {
+            .social-links {
+                justify-content: flex-start;
+            }
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Основной контент */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        @media (min-width: 992px) {
+            .main-content {
+                flex-direction: row;
+            }
+            
+            .left-column {
+                flex: 1;
+            }
+            
+            .right-column {
+                flex: 2;
+            }
+        }
+        
+        /* Карточки */
+        .card {
+            background-color: white;
+            border-radius: 5px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card h2 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+        }
+        
+        /* Collapsible блоки */
+        .collapsible {
+            margin-bottom: 10px;
+        }
+        
+        .collapsible-btn {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            cursor: pointer;
+            padding: 15px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .collapsible-btn:hover {
+            background-color: #ddd;
+        }
+        
+        .collapsible-btn:after {
+            content: '+';
+            font-size: 1.2rem;
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        
+        .collapsible-btn.active:after {
+            content: '-';
+        }
+        
+        .collapsible-content {
+            padding: 0 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: white;
+            border-radius: 0 0 5px 5px;
+        }
+        
+        .collapsible-content-inner {
+            padding: 20px 0;
+        }
+        
+        /* Таймлайн */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--light-color);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -30px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            top: 5px;
+        }
+        
+        .timeline-date {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+        
+        .timeline-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-subtitle {
+            font-style: italic;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        
+        /* Skill bars */
+        .skill {
+            margin-bottom: 20px;
+        }
+        
+        .skill-name {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .skill-bar {
+            height: 10px;
+            background: var(--light-color);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .skill-progress {
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 5px;
+        }
+        
+        /* Контакты */
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .contact-icon {
+            margin-right: 15px;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Подвал */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        /* Видео */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
-
 <body>
-  <div id="main">
-  </div>
-  <div id="header" class="center-content clear-fix">
-    <ul id="topContacts" class="flex-box"></ul>
-  </div>
-  <div id="education" class="gray">
-    <h2 class="edHead">Education</h2>
-    <hr class= "here">
-  </div>
-  <div id="projects">
-    <h2 class="proHead">Projects</h2>
-    <hr class= "here">
-  </div>
-  <div style="clear: both;"></div>
-  <div id="workExperience" class="gray">
-    <h2 class="workHead">Work Experience</h2>
-    <hr class= "here">
-  </div>
-  <div id="mapDiv">
-    <h2 class="lived">Where I've Lived and Worked</h2>
-    <hr class= "here">
-  </div>
-  <br class="mapBr">
-  <div id="lets-connect" class="dark-gray">
-    <h2 class="orange center-text">Let's Connect</h2>
-    <ul id="footerContacts" class="flex-box">
-    </ul>
-  </div>
-</div>
-
-
-<script src="js/revise.js"></script>
-<script type="text/javascript">
-
-if(document.getElementsByClassName('flex-item').length === 0) {
-  document.getElementById('topContacts').style.display = 'none';
-}
-if(document.getElementsByTagName('h1').length === 0) {
-  document.getElementById('header').style.display = 'none';
-}
-if(document.getElementsByClassName('work-entry').length === 0) {
-  document.getElementById('workExperience').style.display = 'none';
-}
-if(document.getElementsByClassName('project-entry').length === 0) {
-  document.getElementById('projects').style.display = 'none';
-}
-if(document.getElementsByClassName('education-entry').length === 0) {
-  document.getElementById('education').style.display = 'none';
-}
-if(document.getElementsByClassName('flex-item').length === 0) {
-  document.getElementById('lets-connect').style.display = 'none';
-}
-if(document.getElementById('map') === null) {
-  document.getElementById('mapDiv').style.display = 'none';
-}
-</script>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <img src="https://via.placeholder.com/150" alt="Моя фотография" class="profile-img">
+                <div class="header-text">
+                    <h1>Иван Иванов</h1>
+                    <p>Frontend разработчик с 3-летним опытом</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-codepen"></i></a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <div class="left-column">
+                <div class="card">
+                    <h2>Обо мне</h2>
+                    <p>Привет! Я frontend разработчик, специализирующийся на создании адаптивных и доступных веб-приложений. Люблю чистый код и современные технологии.</p>
+                    
+                    <div class="video-container">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Контакты</h2>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <div>ivan@example.com</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                        <div>+7 (123) 456-78-90</div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div>Москва, Россия</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Навыки</h2>
+                    <div class="skill">
+                        <div class="skill-name">
+                            <span>HTML/CSS</span>
+                            <span>90%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <div class="skill">
+                        <div class="skill-name">
+                            <span>JavaScript</span>
+                            <span>85%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div class="skill">
+                        <div class="skill-name">
+                            <span>React</span>
+                            <span>80%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <div class="skill">
+                        <div class="skill-name">
+                            <span>TypeScript</span>
+                            <span>75%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 75%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="right-column">
+                <div class="card">
+                    <h2>Опыт работы</h2>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">2021 - настоящее время</div>
+                            <h3 class="timeline-title">Frontend разработчик</h3>
+                            <div class="timeline-subtitle">Компания "ТехноЛаб"</div>
+                            <div class="timeline-content">
+                                <p>Разработка и поддержка веб-приложений на React. Оптимизация производительности. Участие в code review. Работа в команде с backend разработчиками.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">2019 - 2021</div>
+                            <h3 class="timeline-title">Junior Frontend разработчик</h3>
+                            <div class="timeline-subtitle">Студия "ВебПро"</div>
+                            <div class="timeline-content">
+                                <p>Верстка сайтов по макетам. Разработка UI компонентов. Исправление багов. Работа с клиентскими проектами.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Образование</h2>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">2015 - 2019</div>
+                            <h3 class="timeline-title">Бакалавр компьютерных наук</h3>
+                            <div class="timeline-subtitle">Московский технический университет</div>
+                            <div class="timeline-content">
+                                <p>Специализация: веб-технологии и разработка программного обеспечения.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Проекты</h2>
+                    <div class="collapsible">
+                        <button class="collapsible-btn">Интернет-магазин</button>
+                        <div class="collapsible-content">
+                            <div class="collapsible-content-inner">
+                                <p>Полнофункциональный интернет-магазин на React с корзиной, фильтрами и системой оплаты. Использовал Redux для управления состоянием.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapsible">
+                        <button class="collapsible-btn">Панель администратора</button>
+                        <div class="collapsible-content">
+                            <div class="collapsible-content-inner">
+                                <p>Интерактивная панель администратора с графиками и статистикой. Реализовал drag-and-drop функционал и экспорт данных.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapsible">
+                        <button class="collapsible-btn">Мобильное приложение</button>
+                        <div class="collapsible-content">
+                            <div class="collapsible-content-inner">
+                                <p>Кросс-платформенное мобильное приложение на React Native с оффлайн-режимом и push-уведомлениями.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>&copy; 2023 Иван Иванов. Все права защищены.</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Скрипт для collapsible блоков
+        document.querySelectorAll('.collapsible-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.toggle('active');
+                const content = button.nextElementSibling;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                }
+            });
+        });
+    </script>
+    
+    <!-- Font Awesome для иконок -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>
